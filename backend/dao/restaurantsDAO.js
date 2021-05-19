@@ -1,14 +1,14 @@
 let restaurants
 
-export default class ResutantsDAO {
+export default class RestaurantsDAO {
     // conect to db when server starts 
-    static async indectDB(conn) {
+    static async injectDB(conn) {
         if (restaurants) {
             return
         }
         try {
             // sample_restaurants -> restaurants
-            restaurants = await conn.db(proces.env.RESTREVIEWS.NS).collection("restaurants")
+            restaurants = await conn.db(process.env.RESTREVIEWS_NS).collection("restaurants")
         } catch (e) {
             console.error(
                 `Unable to establish a collection handle in restaurantsDAO: ${e}`,
@@ -38,8 +38,27 @@ export default class ResutantsDAO {
         let cursor
 
         try {
-
+            cursor = await restaurants
+                .find(query)
+        } catch(e) {
+            console.error(`Unable to issue find command, ${e}`)
+            return { restaurantsList: [], totalNumRestaurants: 0}
         }
+
+        const displayCursor = cursor.limit(restaurantsPerPage).skip(restaurantsPerPage * page)
+
+        try {
+            const restaurantsList = await displayCursor.toArray()
+            const totalNumRestaurants = await restaurants.countDocuments(query)
+
+            return {restaurantsList, totalNumRestaurants}
+        } catch(e) {
+            console.error(
+                `Unable to convert cursos to array or problem counting documents, ${e}`,
+            )
+            return { restaurantsList: [], totalNumRestaurants:0 }
+        }
+
     }
 }
 
