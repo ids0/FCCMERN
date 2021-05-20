@@ -3,9 +3,11 @@ let restaurants
 export default class RestaurantsDAO {
     // conect to db when server starts 
     static async injectDB(conn) {
+        // if allready exist just return
         if (restaurants) {
             return
         }
+        // try to connect to specific collection
         try {
             // sample_restaurants -> restaurants
             restaurants = await conn.db(process.env.RESTREVIEWS_NS).collection("restaurants")
@@ -16,7 +18,8 @@ export default class RestaurantsDAO {
         }
 
     }
-    // list of all restaurants
+    
+    // get queries
     static async getRestaurants({
         filters = null,
         page = 0,
@@ -38,6 +41,7 @@ export default class RestaurantsDAO {
         let cursor
 
         try {
+            // query the db
             cursor = await restaurants
                 .find(query)
         } catch(e) {
@@ -50,7 +54,7 @@ export default class RestaurantsDAO {
         try {
             const restaurantsList = await displayCursor.toArray()
             const totalNumRestaurants = await restaurants.countDocuments(query)
-
+            // Return results from db
             return {restaurantsList, totalNumRestaurants}
         } catch(e) {
             console.error(
