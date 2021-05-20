@@ -24,7 +24,7 @@ export default class ReviewsDAO {
 
     static async addReview(restaurantId, user, review, date) {
         try {
-            // Create db object
+            // Create db object from request
             const reviewDoc = { name:user.name,
                 user_id: user._id,
                 date: date,
@@ -44,9 +44,11 @@ export default class ReviewsDAO {
             const updateResponse = await reviews.updateOne(
                 // search for specific review
                 { user_id: userId, _id: ObjectId(reviewId) },
+                 // Update review
                 { $set: {text: text, date: date} },
             ) 
             return updateResponse
+
         } catch (e) {
             console.error(`Unable to update review: ${e}`)
             return { error: e }
