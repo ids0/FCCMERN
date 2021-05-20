@@ -14,8 +14,8 @@ export default class ReviewsController {
 
             const date = new Date()
 
-            // Add review con db
-            const ReviewResponse = await ReviewsDAO.addReview(
+            // Add review to db
+            const reviewResponse = await ReviewsDAO.addReview(
                 restaurantId,
                 userInfo,
                 review,
