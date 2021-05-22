@@ -1,3 +1,4 @@
+import { response } from "express"
 import RestaurantsDAO from "../dao/restaurantsDAO.js"
 
 export default class restaurantsController {
@@ -37,4 +38,32 @@ export default class restaurantsController {
         res.json(response)
     }
 
+    static async apiGetRestaurantsById(req,res,next) {
+        try {
+            // get de id/:id
+            let id =  req.params.id || {}
+            let restaurant = await RestaurantsDAO.getRestaurantsById(id)
+
+            if (!restaurant) {
+                res.status(404).json({ error:"Not found" })
+                return
+            }
+
+            res.json(restaurant)
+
+        } catch (e) {
+            console.log(`api, ${e}`)
+            res.status(500).json({ error:e })
+        }
+    }
+
+    static async apiGetRestaurantCuisine(req, res, next) {
+        try {
+            let cuisine = await RestaurantsDAO.getCuisine()
+            res.json(cuisine)
+        } catch (e) {
+            console.log(`api, ${e}`)
+            res.status(500).json({ error: e })
+        }
+    }
 }

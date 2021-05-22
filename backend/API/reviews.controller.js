@@ -4,8 +4,9 @@ export default class ReviewsController {
 
     static async apiPostReview(req,res,next) {
         try {
-            // Get infor from request
-            const restaurantId = req.body.restaurantId
+            // Get info from request
+            const restaurantId = req.body.restaurant_id
+            console.log(restaurantId)
             const review = req.body.text
             const userInfo = {
                 name: req.body.name,

@@ -1,3 +1,5 @@
+import mongodb from "mongodb"
+const ObjectId = mongodb.ObjectID
 let restaurants
 
 export default class RestaurantsDAO {
@@ -63,6 +65,62 @@ export default class RestaurantsDAO {
             return { restaurantsList: [], totalNumRestaurants:0 }
         }
 
+    }
+
+    static async getRestaurantsById(id) {
+        try {
+            const pipeline = [
+                {
+                    //Match id from one restaurant
+                    $match:{
+                        _id: new ObjectId(id),
+                    },
+                },
+                {
+                    $lookup: {
+                        from: "reviews",
+                        let: {
+                            id:"$_id",
+                        },
+                        pipeline: [
+                            {
+                                $match:{
+                                    $expr:{
+                                        $eq: ["$restaurant_id", "$$id"],
+                                    },
+                                },
+                            },
+                            {
+                                $sort:{
+                                    date:-1,
+                                },
+                            },
+                        ],
+                        as: "reviews",
+                    },
+                },
+                {
+                    $addFields:{
+                        reviews: "$reviews",
+                    },
+                },
+            ]
+            return await restaurants.aggregate(pipeline).next()
+        } catch (e) {
+            console.error(`Someting went wron in getRestaurantById: ${e}`)
+            throw e
+        }
+    }
+
+    static async getCuisine() {
+        let cuisines = []
+        try {
+            cuisines = await restaurants.distinct("cuisine")
+            return cuisines
+        } catch (e) {
+            console.error(`Unable to get cuisine ${e}`)
+            return cuisines
+        }
     }
 }
 
