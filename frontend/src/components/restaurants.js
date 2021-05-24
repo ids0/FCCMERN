@@ -3,7 +3,7 @@ import React from "react";
 function Restaurant() {
     return (
         <div className="App">
-            Hello world.
+            Hello world from Restaurant.
         </div>
     );
 }
