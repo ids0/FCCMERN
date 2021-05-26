@@ -81,7 +81,7 @@ const RestaurantsList = props => {
         if (searchCuisine == "All Cuisines") {
             refrestList();
         } else {
-            find(searchName, "name");
+            find(searchCuisine, "name");
         }
 
     };
