@@ -3,8 +3,8 @@ import React, { useState } from "react";
 const Login = props => {
 
     const initialUserState = {
-        name: "",
-        idL: "",
+        name: "ivan",
+        id: "1234",
     };
 
     const [user, setUser] = useState(initialUserState)
